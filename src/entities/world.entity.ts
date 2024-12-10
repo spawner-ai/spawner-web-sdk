@@ -1,19 +1,19 @@
-import { CreateWorldEvent, AgentConfiguration, LoadWorldEvent } from "../../proto/spawner/world/v1/world_pb";
-import { Character } from "./character.entity";
+import { CreateWorldEvent, LoadWorldEvent } from '../../proto/spawner/world/v1/world_pb'
+import { Character } from './character.entity'
 
 export interface WorldProps {
-  id: string;
+  id: string
   characters: Character[]
 }
 
 export class World {
-  readonly id: string;
-  readonly characters: Character[];
-  
+  readonly id: string
+  readonly characters: Character[]
+
   constructor(props: WorldProps) {
     const { id, characters } = props
-    this.id = id;
-    this.characters = characters;
+    this.id = id
+    this.characters = characters
   }
 
   static convertProto(proto: CreateWorldEvent | LoadWorldEvent) {
@@ -21,7 +21,7 @@ export class World {
 
     return new World({
       id: worldId,
-      characters: agents.map(agent => Character.convertProto(agent))
+      characters: agents.map(agent => Character.convertProto(agent)),
     })
   }
 }

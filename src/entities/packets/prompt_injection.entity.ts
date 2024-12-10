@@ -1,31 +1,31 @@
-import { 
+import {
   PromptInjectionEvent as ProtoPromptInjectionEvent,
-  PromptInjectionDetectorResult as ProtoPromptInjectionDetectorResult
- } from '../../../proto/spawner/prompt_injection/v1/prompt_injection_pb'
+  PromptInjectionDetectorResult as ProtoPromptInjectionDetectorResult,
+} from '../../../proto/spawner/prompt_injection/v1/prompt_injection_pb'
 
 interface PromptInjectionDetectorResultProps {
-  jailbreak: number;
-  roleplay: number;
-  code: number;
+  jailbreak: number
+  roleplay: number
+  code: number
 }
 class PromptInjectionDetectorResult {
-  readonly jailbreak: number;
-  readonly roleplay: number;
-  readonly code: number;
+  readonly jailbreak: number
+  readonly roleplay: number
+  readonly code: number
 
   constructor(props: PromptInjectionDetectorResultProps) {
-    const { jailbreak, roleplay, code } = props;
-    this.jailbreak = jailbreak;
-    this.roleplay = roleplay;
-    this.code = code;
+    const { jailbreak, roleplay, code } = props
+    this.jailbreak = jailbreak
+    this.roleplay = roleplay
+    this.code = code
   }
 
   static convertProto(proto: ProtoPromptInjectionDetectorResult) {
-    const { jailbreak, roleplay, code } = proto;
+    const { jailbreak, roleplay, code } = proto
     return new PromptInjectionDetectorResult({
       jailbreak,
       roleplay,
-      code
+      code,
     })
   }
 }
@@ -37,8 +37,8 @@ interface PromptInjectionEventProps {
 }
 
 export class PromptInjectionEvent {
-  readonly utteranceId: string;
-  readonly isFlagged: boolean;
+  readonly utteranceId: string
+  readonly isFlagged: boolean
   readonly result?: PromptInjectionDetectorResult
 
   constructor(props: PromptInjectionEventProps) {
@@ -53,8 +53,7 @@ export class PromptInjectionEvent {
     return new PromptInjectionEvent({
       utteranceId,
       isFlagged,
-      result: result && PromptInjectionDetectorResult.convertProto(result)
+      result: result && PromptInjectionDetectorResult.convertProto(result),
     })
   }
-
 }

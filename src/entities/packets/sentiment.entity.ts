@@ -1,7 +1,7 @@
-import { 
+import {
   SentimentEvent as ProtoSentimentEvent,
-  SentimentResult as ProtoSentimentResult
- } from '../../../proto/spawner/sentiment/v1/sentiment_pb'
+  SentimentResult as ProtoSentimentResult,
+} from '../../../proto/spawner/sentiment/v1/sentiment_pb'
 
 enum SentimentResult {
   UNSPECIFIED = 'UNSPECIFIED',
@@ -33,7 +33,7 @@ export class SentimentEvent {
     return new SentimentEvent({
       utteranceId,
       result,
-      score
+      score,
     })
   }
 
@@ -41,14 +41,14 @@ export class SentimentEvent {
     const { result } = proto
 
     switch (result) {
-			case ProtoSentimentResult.NEUTRAL:
-				return SentimentResult.NEUTRAL;
-			case ProtoSentimentResult.POSITIVE:
-				return SentimentResult.POSITIVE;
+      case ProtoSentimentResult.NEUTRAL:
+        return SentimentResult.NEUTRAL
+      case ProtoSentimentResult.POSITIVE:
+        return SentimentResult.POSITIVE
       case ProtoSentimentResult.NEGATIVE:
-				return SentimentResult.NEGATIVE;
-			default:
-				return SentimentResult.UNSPECIFIED;
-		}
+        return SentimentResult.NEGATIVE
+      default:
+        return SentimentResult.UNSPECIFIED
+    }
   }
 }

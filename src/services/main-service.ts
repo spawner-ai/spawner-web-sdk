@@ -83,7 +83,7 @@ export class SpawnerMainService {
   private client: Client<MainServiceType>
 
   constructor(props: ServiceProps) {
-    const {config} = props
+    const { config } = props
     this.config = config
 
     this.client = this.createClient()
@@ -95,7 +95,7 @@ export class SpawnerMainService {
       MainService,
       createGrpcWebTransport({
         baseUrl: `${ssl ? `https` : `http`}://${hostname}`,
-      })
+      }),
     )
     return client
   }
@@ -103,7 +103,7 @@ export class SpawnerMainService {
   async openChannel(
     sessionToken: SessionToken,
     players: Player[],
-    characters: Character[]
+    characters: Character[],
   ) {
     const host = create(ChannelHostSchema, {
       sessionId: sessionToken.sessionId,
@@ -123,12 +123,12 @@ export class SpawnerMainService {
           ageGroup: p.age_group,
           gender: p.gender,
           description: p.description,
-        })
+        }),
       ),
       agents: characters.map(c =>
         create(AgentActorSchema, {
           id: c.agent?.id,
-        })
+        }),
       ),
     })
 
@@ -149,17 +149,13 @@ export class SpawnerMainService {
 
     const options = this.getOptions(sessionToken)
 
-    try{
-      const channelPacket = await this.client.openChannel(packet, options)
-      if(channelPacket.error){
-        throw channelPacket.error
-      }
-      const protoChannel = channelPacket.payload.value as ChannelController
-      const channel = Channel.convertProto(protoChannel)
-      return channel
-    } catch (err:unknown) {
-      throw err;
+    const channelPacket = await this.client.openChannel(packet, options)
+    if (channelPacket.error) {
+      throw channelPacket.error
     }
+    const protoChannel = channelPacket.payload.value as ChannelController
+    const channel = Channel.convertProto(protoChannel)
+    return channel
   }
 
   async generateSessionToken(props: GenerateSessionTokenProps) {
@@ -172,20 +168,16 @@ export class SpawnerMainService {
         playerId: props.playerId,
         featureConfiguration: props.featureConfiguration,
         languageCode: LanguageCode.JA,
-      }
+      },
     )
 
-    try{
-      const protoSessionToken = await this.client.generateSessionToken(
-        generateSessionTokenRequest
-      )
-  
-      const sessionToken = SessionToken.convertProto(protoSessionToken)
-  
-      return sessionToken
-    } catch(err) {
-      throw err;
-    }
+    const protoSessionToken = await this.client.generateSessionToken(
+      generateSessionTokenRequest,
+    )
+
+    const sessionToken = SessionToken.convertProto(protoSessionToken)
+
+    return sessionToken
   }
 
   async refreshSessionToken(props: RefreshSessionTokenProps) {
@@ -194,29 +186,25 @@ export class SpawnerMainService {
       RefreshSessionTokenRequestSchema,
       {
         refreshToken,
-      }
+      },
     )
 
-    try {
-      const protoSessionToken = await this.client.refreshSessionToken(
-        refreshSessionTokenRequest
-      )
-      if (protoSessionToken.error) {
-        const err = PacketError.convertProto(protoSessionToken.error);
-        throw err
-      }
-      const sessionToken = SessionToken.convertProto(protoSessionToken);
-      return sessionToken;
-    } catch(err) {
+    const protoSessionToken = await this.client.refreshSessionToken(
+      refreshSessionTokenRequest,
+    )
+    if (protoSessionToken.error) {
+      const err = PacketError.convertProto(protoSessionToken.error)
       throw err
     }
+    const sessionToken = SessionToken.convertProto(protoSessionToken)
+    return sessionToken
   }
 
   async createWorld(props: CreateWorldProps) {
     const { sessionToken, characters } = props
     if (!sessionToken.token) {
       throw Error(
-        'Session token is not valid. Generate a session token before creating world.'
+        'Session token is not valid. Generate a session token before creating world.',
       )
     }
 
@@ -229,7 +217,7 @@ export class SpawnerMainService {
           customId: c.customId,
         }),
         objective: c.agent?.objective,
-      })
+      }),
     )
 
     const protoWorld = create(CreateWorldEventSchema, {
@@ -253,19 +241,16 @@ export class SpawnerMainService {
     })
 
     const options = this.getOptions(sessionToken)
-    try {
-      const worldPacket: ProtoPacket = await this.client.createWorld(packet, options)
-      if(worldPacket.error){
-        throw worldPacket.error
-      }
-      const packetWorldController = worldPacket.payload.value as WorldController
-      const createdWorld = packetWorldController.payload.value as CreateWorldEvent
-  
-      const world = World.convertProto(createdWorld)
-      return world
-    } catch(err) {
-      throw err;
+
+    const worldPacket: ProtoPacket = await this.client.createWorld(packet, options)
+    if (worldPacket.error) {
+      throw worldPacket.error
     }
+    const packetWorldController = worldPacket.payload.value as WorldController
+    const createdWorld = packetWorldController.payload.value as CreateWorldEvent
+
+    const world = World.convertProto(createdWorld)
+    return world
   }
 
   async LoadWorld(props: LoadWorldProps) {
@@ -292,19 +277,15 @@ export class SpawnerMainService {
     })
 
     const options = this.getOptions(sessionToken)
-    try{
-      const worldPacket : ProtoPacket = await this.client.loadWorld(loadWorldRequest, options)
-      if(worldPacket.error){
-        throw worldPacket.error
-      }
-      const packetWorldController = worldPacket.payload.value as WorldController
-      const loadWorld = packetWorldController.payload.value as LoadWorldEvent
-      const world = World.convertProto(loadWorld)
-      return world
-    } catch(err) {
-      throw err
+
+    const worldPacket: ProtoPacket = await this.client.loadWorld(loadWorldRequest, options)
+    if (worldPacket.error) {
+      throw worldPacket.error
     }
-    
+    const packetWorldController = worldPacket.payload.value as WorldController
+    const loadWorld = packetWorldController.payload.value as LoadWorldEvent
+    const world = World.convertProto(loadWorld)
+    return world
   }
 
   private getOptions(sessionToken: SessionToken) {
