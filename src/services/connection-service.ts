@@ -80,7 +80,6 @@ export class ConnectionService {
 
 		this.mainService = new SpawnerMainService({
 			config,
-      onError: this.onError
 		});
 
     const websocketProps: WebSocketProps = {
@@ -103,53 +102,58 @@ export class ConnectionService {
 		}
 
 		const prevSessionToken = this.sessionToken;
-		await this.ensureSessionToken(session);
+    try {
+      const sessionToken = await this.ensureSessionToken(session);
 
-    if(!this.sessionToken) {
-      throw Error("Something went wrong and the session token could not be passed or generated.")
-    }
-
-		if (prevSessionToken !== this.sessionToken) {
-			this.connectionProps.sessionAccessor?.set(this.sessionToken);
-		}
-
-    if(!world){
-      if(!this.connectionProps.characters){
-        throw Error("The character to be given to the world is empty or undefined.")
+      if (prevSessionToken !== this.sessionToken) {
+        this.connectionProps.sessionAccessor?.set(sessionToken);
       }
-      const createdWorld = await this.mainService.createWorld({
-        sessionToken: this.sessionToken,
-        characters: this.connectionProps.characters
-      })
-      this.world = createdWorld;
-    } else {
-      const loadWorld = await this.mainService.LoadWorld({
-        sessionToken: this.sessionToken,
-        worldId: world.id
+  
+      if(!world){
+        if(!this.connectionProps.characters){
+          throw Error("The character to be given to the world is empty or undefined.")
+        }
+        const createdWorld = await this.mainService.createWorld({
+          sessionToken: sessionToken,
+          characters: this.connectionProps.characters
+        })
+        this.world = createdWorld;
+      } else {
+        const loadWorld = await this.mainService.LoadWorld({
+          sessionToken: sessionToken,
+          worldId: world.id
+        });
+        this.world = loadWorld;
+      }
+  
+      await this.connection.open({
+        session: sessionToken
       });
-      this.world = loadWorld;
+  
+      this.state = ConnectionState.ACTIVE
+      return this.world;
+    } catch(err) {
+      this.onError(err);
+      return;
     }
-
-    await this.connection.open({
-      session: this.sessionToken
-    });
-
-    this.state = ConnectionState.ACTIVE
-    return this.world;
 	}
 
   async openChannel(characters: Character[]) {
-    if(!this.isActive()){
-      throw Error("Connection is inactive. Connection is must be active to start interaction.")
-    }
-    const sessionToken = await this.ensureSessionToken(this.sessionToken);
-    const channel = await this.mainService.openChannel(
-      sessionToken,
-      this.players,
-      characters
-    );
-    
-    return channel
+    try{
+      if(!this.isActive()){
+        throw Error("Connection is inactive. Connection is must be active to start interaction.")
+      }
+      const sessionToken = await this.ensureSessionToken(this.sessionToken);
+      const channel = await this.mainService.openChannel(
+        sessionToken,
+        this.players,
+        characters
+      );
+      this.channel = channel;
+      return channel
+    } catch (err) {
+      throw err
+    }    
   }
 
 	close() {
@@ -165,11 +169,9 @@ export class ConnectionService {
 		return this.state;
 	}
 
-  getCharacters() {
-    if(!this.world){
-      throw Error("World is not exist. Open connection to create or assign the world to the session.")
-    }
-    return this.world?.characters;
+  async getCharacters() {
+    const world = await this.open(this.world)
+    return world ? world.characters : [];
   }
 
 	async sendText(text: string) {
@@ -218,8 +220,6 @@ export class ConnectionService {
 			}
     })
 
-    //const sessionToken = await this.ensureSessionToken(this.sessionToken)
-
 		this.connection.write(sendPacket);
 	}
 
@@ -239,16 +239,16 @@ export class ConnectionService {
     }
     
     try{
-    const sessionToken = await this.mainService.generateSessionToken({
+      const sessionToken = await this.mainService.generateSessionToken({
         apiKey: key,
         apiSecret: secret,
-			workspaceId: this.connectionProps.workspaceId,
-			playerId: this.players[0].id,
+        workspaceId: this.connectionProps.workspaceId,
+        playerId: this.players[0].id,
         featureConfiguration,
-		});
-
-		this.sessionToken = sessionToken;
-		return sessionToken;
+      });
+      
+      this.sessionToken = sessionToken;
+      return sessionToken;
     } catch(err) {
       throw err;
     }    
@@ -256,8 +256,7 @@ export class ConnectionService {
 
   async refreshSessionToken(refreshToken: string) {
     const sessionToken = await this.mainService.refreshSessionToken({
-      refreshToken,
-      onError: this.onError
+      refreshToken
     });
 
     this.sessionToken = sessionToken;
@@ -268,12 +267,18 @@ export class ConnectionService {
 		let sessionToken = session ?? this.sessionToken;
 
 		if (!sessionToken || SessionToken.isExpired(sessionToken)) {
-      sessionToken = await this.generateSessionToken();
+      if(!this.connectionProps.generateSessionToken){
+        try {
+          sessionToken = await this.generateSessionToken()
+        } catch (err) {
+          throw err
+        }
+      } else {
+        sessionToken = await this.connectionProps.generateSessionToken();
+      }
 		}
-
-		this.sessionToken = sessionToken;
-
-		return this.sessionToken;
+    this.sessionToken = sessionToken;
+    return this.sessionToken;
 	}
 
 	private ensurePlayer(player?: Player) {

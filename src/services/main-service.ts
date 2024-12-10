@@ -4,15 +4,10 @@ import {
   createClient,
 } from '@connectrpc/connect'
 import { createGrpcWebTransport } from '@connectrpc/connect-web'
-import {
-  type WritableIterable,
-  createWritableIterable,
-} from '@connectrpc/connect/protocol'
 import { create } from '@bufbuild/protobuf'
 
 import {
   GenerateSessionTokenRequestSchema,
-  GetSessionRequestSchema,
   MainService,
   RefreshSessionTokenRequestSchema,
 } from '../../proto/spawner/main/v1/main_pb'
@@ -22,7 +17,6 @@ import {
   SpawnerPacketSchema,
   SpawnerPacket as ProtoPacket,
   SpawnerPacketType,
-  SpawnerPacketTypeSchema,
 } from '../../proto/spawner/packet/v1/packet_pb'
 import type { ConnectionConfig } from '../common/types'
 import {
@@ -50,26 +44,15 @@ import {
   LoadWorldEvent,
 } from '../../proto/spawner/world/v1/world_pb'
 
-import type { ConnectionError, Awaitable } from '../common/types'
 import type { Character } from '../entities/character.entity'
 import { PacketError } from '../entities/packets/error.entity'
-import { SpawnerPacket } from '../entities/packets/spawner_packet.entity'
 import type { Player } from '../entities/player.entity'
-import { SessionToken, Session } from '../entities/session_token.entity'
+import { SessionToken } from '../entities/session_token.entity'
 import { World } from '../entities/world.entity'
 import { Channel } from '../entities/channel.entity'
 
-interface SendProps {
-  sessionToken: SessionToken
-  sendPacket: ProtoPacket
-  onError: ((err: ConnectionError) => void) | undefined
-  onMessage: ((packet: SpawnerPacket) => void) | undefined
-  onClose: (() => void) | undefined
-}
-
 interface ServiceProps {
   config: ConnectionConfig
-  onError: ((err: ConnectionError) => Awaitable<void>)
 }
 
 interface GenerateSessionTokenProps {
@@ -83,7 +66,6 @@ interface GenerateSessionTokenProps {
 
 interface RefreshSessionTokenProps {
   refreshToken: string
-  onError: ((err: ConnectionError) => void) | undefined
 }
 
 interface CreateWorldProps {
@@ -99,12 +81,10 @@ interface LoadWorldProps {
 export class SpawnerMainService {
   private config: ConnectionConfig
   private client: Client<MainServiceType>
-  private onError: ((err: ConnectionError) => Awaitable<void>)
 
   constructor(props: ServiceProps) {
-    const {config, onError} = props
+    const {config} = props
     this.config = config
-    this.onError = onError
 
     this.client = this.createClient()
   }
@@ -153,7 +133,7 @@ export class SpawnerMainService {
     })
 
     const channelController = create(ChannelControllerSchema, {
-      type: ChannelControllerType.CREATE_SERVER_STREAMING,
+      type: ChannelControllerType.CREATE,
       host,
       members,
       actor,
@@ -172,14 +152,16 @@ export class SpawnerMainService {
     try{
       const channelPacket = await this.client.openChannel(packet, options)
       console.log('channel packet:',channelPacket);
-  
+      if(channelPacket.error){
+        throw channelPacket.error
+      }
       const protoChannel = channelPacket.payload.value as ChannelController
   
       console.log('proto channel:',protoChannel);
       const channel = Channel.convertProto(protoChannel)
       return channel
     } catch (err:unknown) {
-      this.onError(err);
+      throw err;
     }
   }
 
@@ -196,17 +178,21 @@ export class SpawnerMainService {
       }
     )
 
-    const protoSessionToken = await this.client.generateSessionToken(
-      generateSessionTokenRequest
-    )
-
-    const sessionToken = SessionToken.convertProto(protoSessionToken)
-
-    return sessionToken
+    try{
+      const protoSessionToken = await this.client.generateSessionToken(
+        generateSessionTokenRequest
+      )
+  
+      const sessionToken = SessionToken.convertProto(protoSessionToken)
+  
+      return sessionToken
+    } catch(err) {
+      throw err;
+    }
   }
 
   async refreshSessionToken(props: RefreshSessionTokenProps) {
-    const { refreshToken, onError } = props
+    const { refreshToken } = props
     const refreshSessionTokenRequest = create(
       RefreshSessionTokenRequestSchema,
       {
@@ -214,19 +200,19 @@ export class SpawnerMainService {
       }
     )
 
-    const protoSessionToken = await this.client.refreshSessionToken(
-      refreshSessionTokenRequest
-    )
-
-    if (protoSessionToken.error) {
-      const err = PacketError.convertProto(protoSessionToken.error)
-      onError?.(err)
-      return
+    try {
+      const protoSessionToken = await this.client.refreshSessionToken(
+        refreshSessionTokenRequest
+      )
+      if (protoSessionToken.error) {
+        const err = PacketError.convertProto(protoSessionToken.error);
+        throw err
+      }
+      const sessionToken = SessionToken.convertProto(protoSessionToken);
+      return sessionToken;
+    } catch(err) {
+      throw err
     }
-
-    const sessionToken = SessionToken.convertProto(protoSessionToken)
-
-    return sessionToken
   }
 
   async createWorld(props: CreateWorldProps) {
@@ -271,12 +257,19 @@ export class SpawnerMainService {
     })
 
     const options = this.getOptions(sessionToken)
-    const worldPacket = await this.client.createWorld(packet, options)
-    const packetWorldController = worldPacket.payload.value as WorldController
-    const createdWorld = packetWorldController.payload.value as CreateWorldEvent
-
-    const world = World.convertProto(createdWorld)
-    return world
+    try {
+      const worldPacket: ProtoPacket = await this.client.createWorld(packet, options)
+      if(worldPacket.error){
+        throw worldPacket.error
+      }
+      const packetWorldController = worldPacket.payload.value as WorldController
+      const createdWorld = packetWorldController.payload.value as CreateWorldEvent
+  
+      const world = World.convertProto(createdWorld)
+      return world
+    } catch(err) {
+      throw err;
+    }
   }
 
   async LoadWorld(props: LoadWorldProps) {
@@ -303,12 +296,19 @@ export class SpawnerMainService {
     })
 
     const options = this.getOptions(sessionToken)
-    const worldPacket = await this.client.loadWorld(loadWorldRequest, options)
-
-    const packetWorldController = worldPacket.payload.value as WorldController
-    const loadWorld = packetWorldController.payload.value as LoadWorldEvent
-    const world = World.convertProto(loadWorld)
-    return world
+    try{
+      const worldPacket : ProtoPacket = await this.client.loadWorld(loadWorldRequest, options)
+      if(worldPacket.error){
+        throw worldPacket.error
+      }
+      const packetWorldController = worldPacket.payload.value as WorldController
+      const loadWorld = packetWorldController.payload.value as LoadWorldEvent
+      const world = World.convertProto(loadWorld)
+      return world
+    } catch(err) {
+      throw err
+    }
+    
   }
 
   private getOptions(sessionToken: SessionToken) {

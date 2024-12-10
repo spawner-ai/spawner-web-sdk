@@ -73,8 +73,8 @@ export class SpawnerClient {
 
   setApiKey(key: ApiKey) {
     this.apiKey = key;
-		return this;
-	}
+    return this;
+  }
 
 	setWorkspace(id: string) {
 		this.workspaceId = id;
