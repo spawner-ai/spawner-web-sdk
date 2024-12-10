@@ -1,0 +1,11 @@
+.git
+.gitignore
+.npmignore
+eslint.config.mjs
+tsconfig.json
+node_modules/
+src/
+tsconfig.json
+*.log
+# Mac
+**/.DS_Store
