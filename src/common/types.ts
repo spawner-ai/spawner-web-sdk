@@ -128,18 +128,6 @@ export type MainServiceType = GenService<{
     output: typeof SpawnerPacketSchema;
   },
   /**
-   * Handles session specific processes for server streaming. For example,
-   * browsers (which don't support bidirectional streaming) should use this rpc
-   * instead.
-   *
-   * @generated from rpc spawner.main.v1.MainService.ConnectSessionServerStreaming
-   */
-  connectSessionServerStreaming: {
-    methodKind: "server_streaming";
-    input: typeof SpawnerPacketSchema;
-    output: typeof SpawnerPacketSchema;
-  },
-  /**
    * Opens a channel with initial values.
    *
    * @generated from rpc spawner.main.v1.MainService.OpenChannel
