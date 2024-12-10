@@ -1,12 +1,11 @@
 import { GRPC_HOSTNAME, DEFAULT_DISCONNECT_TIMEOUT } from "../common/config";
-import type { ApiKey, ConnectionConfig, AutoConnectConfig, Gateway, Accessor } from "../common/types";
-import type { ConnectionError } from "../common/types";
+import type { ApiKey, ConnectionConfig, AutoConnectConfig, Gateway, Accessor, ConnectionError, GenerateSessionTokenFn, InternalConnectionConfig } from "../common/types";
 import type { SpawnerPacket } from "../entities/packets/spawner_packet.entity";
 import type { Player } from "../entities/player.entity";
 import { ConnectionService } from "../services/connection-service";
 import type { SessionToken } from "../entities/session_token.entity";
-import type { FeatureConfiguration } from "../common/types";
-import { Character } from "../entities/character.entity";
+import type { FeatureConfiguration, Awaitable } from "../common/types";
+import type { Character } from "../entities/character.entity";
 
 export class SpawnerClient {
 	private config: ConnectionConfig = {};
@@ -15,11 +14,18 @@ export class SpawnerClient {
 	private player: Player | undefined;
   private characters: Character[] | undefined;
   private sessionAccessor: Accessor<SessionToken> | undefined;
-	private onOpen: (() => void) | undefined;
-	private onError: ((err: ConnectionError) => void) | undefined;
-	private onMessage: ((packet: SpawnerPacket) => void) | undefined;
-	private onClose: ((event?: CloseEvent) => void) | undefined;
+  private generateSessionTokenFn: GenerateSessionTokenFn | undefined;
+	private onOpen: (() => Awaitable<void>);
+	private onError: ((err: ConnectionError) => Awaitable<void>);
+	private onMessage: ((packet: SpawnerPacket) => Awaitable<void>);
+	private onClose: ((event?: CloseEvent) => Awaitable<void>);
 
+  constructor() {
+    this.onOpen = () => {}
+    this.onError = (err: ConnectionError) => {}
+    this.onMessage = (packet: SpawnerPacket) => {}
+    this.onClose = (event?: CloseEvent) => {}
+  }
 	public setup() {
 		this.validate();
 		const config = this.ensureConfig();
@@ -35,6 +41,7 @@ export class SpawnerClient {
 			onError: this.onError,
 			onMessage: this.onMessage,
 			onClose: this.onClose,
+      generateSessionToken: this.generateSessionTokenFn,
 		});
 	}
 
@@ -47,6 +54,10 @@ export class SpawnerClient {
 			config,
 			apiKey: this.apiKey!,
 			workspaceId: this.workspaceId!,
+      onOpen: this.onOpen,
+			onError: this.onError,
+			onMessage: this.onMessage,
+			onClose: this.onClose,
 		});
 
 		const token = await service.generateSessionToken();
@@ -57,7 +68,7 @@ export class SpawnerClient {
 		const gateway: Gateway = this.ensureGateway(this.config?.gateway);
     const feature: FeatureConfiguration = this.ensureFeature(this.config?.feature);
     const autoConnect: AutoConnectConfig = this.ensureAutoConnectConfig(this.config?.autoConnect)
-		const config: ConnectionConfig = { gateway, autoConnect,feature };
+		const config: InternalConnectionConfig = { gateway, autoConnect,feature };
 		return config;
 	}
 
@@ -92,6 +103,11 @@ export class SpawnerClient {
   public setSessionAccessor(props: Accessor<SessionToken>) {
     this.sessionAccessor = props;
 
+    return this;
+  }
+
+  setGenerateSessionToken(generateSessionToken: GenerateSessionTokenFn) {
+    this.generateSessionTokenFn = generateSessionToken;
     return this;
   }
 

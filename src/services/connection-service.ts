@@ -1,19 +1,20 @@
-import type { WritableIterable } from "@connectrpc/connect/protocol";
+import { v4 } from 'uuid'
 import { create } from "@bufbuild/protobuf";
 import { FeatureConfigurationSchema } from "../../proto/spawner/main/v1/main_pb";
 import {
-	SpawnerPacket as ProtoPacket,
 	SpawnerPacketSchema,
 	SpawnerPacketType,
+  SpawnerPacket as ProtoPacket
 } from "../../proto/spawner/packet/v1/packet_pb";
 import { EventActorSchema, EventActorType, EventAgentSchema, EventPlayerSchema, RoutingSchema } from "../../proto/spawner/routing/v1/routing_pb";
 import type {
 	ApiKey,
-	ConnectionConfig,
+	InternalConnectionConfig,
 	Accessor,
 	ConnectionError,
+  GenerateSessionTokenFn
 } from "../common/types";
-import { ConnectionState } from "../common/types";
+import { ConnectionState, Awaitable } from "../common/types";
 import { Channel } from "../entities/channel.entity";
 import { Character } from "../entities/character.entity";
 import type { SpawnerPacket } from "../entities/packets/spawner_packet.entity";
@@ -22,33 +23,35 @@ import { SessionToken } from "../entities/session_token.entity";
 import { SpawnerMainService } from "./main-service";
 import { TextEventSchema } from "../../proto/spawner/text/v1/text_pb";
 import { World } from "../entities/world.entity";
+import { type WebSocketProps, Connection } from '../connection/websocket-connection';
 
 interface ConnectionProps {
-	config: ConnectionConfig;
+	config: InternalConnectionConfig;
 	apiKey: ApiKey;
 	workspaceId: string;
 	player?: Player;
   characters?: Character[];
 	sessionAccessor?: Accessor<SessionToken>;
-	onOpen?: () => void;
-	onError?: (err: ConnectionError) => void;
-	onMessage?: (packet: SpawnerPacket) => void;
-	onClose?: () => void;
+	onOpen: () => void;
+	onError: (err: ConnectionError) => void;
+	onMessage: (packet: SpawnerPacket) => void;
+	onClose: () => void;
+  generateSessionToken?: GenerateSessionTokenFn
 }
 
 export class ConnectionService {
 	private connectionProps: ConnectionProps;
-	private stream!: WritableIterable<ProtoPacket>;
+	private connection: Connection;
 	private state: ConnectionState = ConnectionState.INACTIVE;
 	private sessionToken!: SessionToken | undefined;
 	private channel: Channel | undefined;
 	private players: Player[];
   private world: World | undefined;
 
-	private onOpen: (() => void) | undefined;
-	private onError: ((err: ConnectionError) => void) | undefined;
-	private onMessage: ((packet: SpawnerPacket) => void) | undefined;
-	private onClose: (() => void) | undefined;
+	private onOpen: (() => Awaitable<void>);
+	private onError: ((err: ConnectionError) => Awaitable<void>);
+	private onMessage: ((packet: SpawnerPacket) => Awaitable<void>);
+	private onClose: (() => Awaitable<void>);
 
 	private mainService: SpawnerMainService;
 
@@ -77,14 +80,23 @@ export class ConnectionService {
 
 		this.mainService = new SpawnerMainService({
 			config,
+      onError: this.onError
 		});
+
+    const websocketProps: WebSocketProps = {
+      onOpen: this.onOpen,
+      onMessage: this.onMessage,
+      onError: this.onError,
+      onClose: this.onClose,
+    };
+
+    this.connection = new Connection(websocketProps);
 	}
 
 	async open(world?: World): Promise<World | void> {
 		if (this.state !== ConnectionState.INACTIVE) return;
 
-		this.state = ConnectionState.ACTIVATING;
-
+    this.state = ConnectionState.ACTIVATING;
 		let session: SessionToken | undefined;
 		if (this.connectionProps.sessionAccessor) {
 			session = await this.connectionProps.sessionAccessor.get();
@@ -100,8 +112,6 @@ export class ConnectionService {
 		if (prevSessionToken !== this.sessionToken) {
 			this.connectionProps.sessionAccessor?.set(this.sessionToken);
 		}
-
-    let stream: WritableIterable<ProtoPacket>;
 
     if(!world){
       if(!this.connectionProps.characters){
@@ -120,21 +130,15 @@ export class ConnectionService {
       this.world = loadWorld;
     }
 
-      stream = await this.mainService.openSession({
-        sessionToken: this.sessionToken,
-        onMessage: this.onMessage,
-        onError: this.onError,
-        onClose: this.onClose,
-      });  
+    await this.connection.open({
+      session: this.sessionToken
+    });
 
-		this.stream = stream;
-		this.state = ConnectionState.ACTIVE;
-		console.log("Connection is active. You are ready to open the channel.");
-
+    this.state = ConnectionState.ACTIVE
     return this.world;
 	}
 
-  async startInteraction(characters: Character[]) {
+  async openChannel(characters: Character[]) {
     if(!this.isActive()){
       throw Error("Connection is inactive. Connection is must be active to start interaction.")
     }
@@ -150,18 +154,12 @@ export class ConnectionService {
 
 	close() {
 		this.state = ConnectionState.INACTIVE;
-		this.stream.close();
-		this.onClose?.();
+    this.connection.close()
 	}
 
 	isActive() {
 		return this.state === ConnectionState.ACTIVE;
 	}
-
-  getStream(){
-    if(!this.isActive()) return
-    return this.stream;
-  }
 
 	getConnectionState() {
 		return this.state;
@@ -178,7 +176,7 @@ export class ConnectionService {
 		this.validate();
 
 		const textEvent = create(TextEventSchema, {
-			utteranceId: this.generateUtteranceId(),
+			utteranceId: v4(),
 			text,
 		});
 
@@ -211,16 +209,18 @@ export class ConnectionService {
       target
     })
 
-		const packet = create(SpawnerPacketSchema, {
+		const sendPacket: ProtoPacket = create(SpawnerPacketSchema, {
       type: SpawnerPacketType.TEXT,
 			routing,
 			payload: {
 				case: "text",
 				value: textEvent,
 			}
-    }) 
+    })
 
-		await this.stream.write(packet);
+    //const sessionToken = await this.ensureSessionToken(this.sessionToken)
+
+		this.connection.write(sendPacket);
 	}
 
 	async generateSessionToken() {
@@ -238,6 +238,16 @@ export class ConnectionService {
 		this.sessionToken = sessionToken;
 		return sessionToken;
 	}
+
+  async refreshSessionToken(refreshToken: string) {
+    const sessionToken = await this.mainService.refreshSessionToken({
+      refreshToken,
+      onError: this.onError
+    });
+
+    this.sessionToken = sessionToken;
+    return sessionToken
+  }
 
 	private async ensureSessionToken(session?: SessionToken) {
 		let sessionToken = session ?? this.sessionToken;
@@ -264,24 +274,7 @@ export class ConnectionService {
 		return this.players;
 	}
 
-  private generateUtteranceId(){
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const length = 12;
-    let result = '';
-
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters[randomIndex];
-    }
-
-    return result;
-  }
-
 	private validate() {
-		if (!this.stream) {
-			throw Error("Connection does not exist.");
-		}
-
 		if (!this.isActive()) {
 			throw Error("Connection is not ready.");
 		}

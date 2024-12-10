@@ -1,6 +1,6 @@
 import type { PlayerActor } from "../../proto/spawner/actor/v1/actor_pb";
 
-type AgeGroup = "NONE" | "CHILD" | "TEENAGER" | "ADULT" | "ELDERLY";
+type AgeGroup = "NONE" | "CHILD" | "TEEN" | "ADULT" | "ELDERLY";
 type Gender = "NONE" | "MALE" | "FEMALE";
 export interface PlayerProps {
 	id: string;
@@ -45,7 +45,7 @@ export class Player {
 		const validAgeGroups: AgeGroup[] = [
 			"NONE",
 			"CHILD",
-			"TEENAGER",
+			"TEEN",
 			"ADULT",
 			"ELDERLY",
 		];

@@ -12,6 +12,7 @@ import {
  } from "../../proto/spawner/main/v1/main_pb";
  import type { SpawnerPacketSchema } from "../../proto/spawner/packet/v1/packet_pb"
 import type { PacketError } from "../entities/packets/error.entity";
+import type { SessionToken } from "../entities/session_token.entity";
 
 export interface ApiKey {
 	key: string;
@@ -43,6 +44,8 @@ export interface Accessor<T> {
   set: (content: T) => Awaitable<void>;
 }
 
+export type GenerateSessionTokenFn = () => Promise<SessionToken>;
+
 export interface AutoConnectConfig {
   autoReconnect?: boolean;
   disconnectTimeout?: number;
@@ -52,6 +55,12 @@ export interface ConnectionConfig {
 	gateway?: Gateway;
   autoConnect?: AutoConnectConfig;
   feature?: FeatureConfiguration;
+}
+
+export interface InternalConnectionConfig {
+	gateway: Gateway;
+  autoConnect: AutoConnectConfig;
+  feature: FeatureConfiguration;
 }
 
 export type ConnectionError = Error | Event | PacketError | unknown;

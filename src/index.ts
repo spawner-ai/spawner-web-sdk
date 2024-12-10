@@ -1,7 +1,7 @@
 import { SpawnerClient } from "./clients/spawner-client";
 import { ApiKey } from "./common/types";
 import { ConnectionState } from "./common/types";
-import { SpawnerPacket } from "./entities/packets/spawner_packet.entity";
+import { SpawnerPacket, SpawnerPacketType } from "./entities/packets/spawner_packet.entity";
 import { ConnectionService } from "./services/connection-service";
 import { SpawnerMainService } from "./services/main-service";
 import { ConnectionError } from "./common/types";
@@ -16,7 +16,7 @@ import { Routing } from "./entities/packets/routing.entity";
 import { ChannelController } from "./entities/packets/channel_controller";
 import { TextEvent } from "./entities/packets/text.entity";
 import { Channel } from "./entities/channel.entity";
-import { SessionToken } from "./entities/session_token.entity";
+import { SessionToken, Session } from "./entities/session_token.entity";
 import { WorldController } from "./entities/packets/world_controller.entity";
 export {
 	ApiKey,
@@ -25,6 +25,7 @@ export {
 	ConnectionService,
 	ConnectionState,
 	SpawnerPacket,
+  SpawnerPacketType,
 	ConnectionError,
 	Player,
 	Character,
@@ -38,5 +39,6 @@ export {
   TextEvent,
   WorldController,
   Channel,
+  Session,
   SessionToken
 };

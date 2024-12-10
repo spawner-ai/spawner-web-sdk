@@ -1,220 +1,277 @@
-import { type CallOptions, type Client, createClient } from "@connectrpc/connect";
-import { createGrpcWebTransport } from "@connectrpc/connect-web";
-import { type WritableIterable, createWritableIterable } from "@connectrpc/connect/protocol";
-import { create } from "@bufbuild/protobuf";
-
-import { GenerateSessionTokenRequestSchema, MainService } from "../../proto/spawner/main/v1/main_pb";
-import { MainServiceType } from "../common/types";
-import { type FeatureConfiguration } from "../../proto/spawner/main/v1/main_pb";
-import { SpawnerPacketSchema, SpawnerPacket as ProtoPacket, SpawnerPacketType, SpawnerPacketTypeSchema } from "../../proto/spawner/packet/v1/packet_pb";
-import type { ConnectionConfig } from "../common/types";
-import { ActorSchema, AgentActorSchema, PlayerActorSchema } from "../../proto/spawner/actor/v1/actor_pb";
 import {
-	ChannelController,
-	ChannelControllerSchema,
-	ChannelControllerType,
-	ChannelHostSchema,
-	ChannelMemberSchema,
-} from "../../proto/spawner/channel/v1/channel_pb";
-import { LanguageCode } from "../../proto/spawner/language_code/v1/language_code_pb";
-import { CreateWorldEventSchema, WorldControllerSchema, WorldControllerType, WorldController, CreateWorldEvent, AgentConfigurationSchema, AgentCharacterSchema, LoadWorldEventSchema, LoadWorldEvent } from "../../proto/spawner/world/v1/world_pb";
+  type CallOptions,
+  type Client,
+  createClient,
+} from '@connectrpc/connect'
+import { createGrpcWebTransport } from '@connectrpc/connect-web'
+import {
+  type WritableIterable,
+  createWritableIterable,
+} from '@connectrpc/connect/protocol'
+import { create } from '@bufbuild/protobuf'
 
-import type { ConnectionError } from "../common/types";
-import type { Character } from "../entities/character.entity";
-import { PacketError } from "../entities/packets/error.entity";
-import { SpawnerPacket } from "../entities/packets/spawner_packet.entity";
-import type { Player } from "../entities/player.entity";
-import { SessionToken } from "../entities/session_token.entity";
-import { World } from "../entities/world.entity";
-import { Channel } from "../entities/channel.entity";
+import {
+  GenerateSessionTokenRequestSchema,
+  GetSessionRequestSchema,
+  MainService,
+  RefreshSessionTokenRequestSchema,
+} from '../../proto/spawner/main/v1/main_pb'
+import { MainServiceType } from '../common/types'
+import { type FeatureConfiguration } from '../../proto/spawner/main/v1/main_pb'
+import {
+  SpawnerPacketSchema,
+  SpawnerPacket as ProtoPacket,
+  SpawnerPacketType,
+  SpawnerPacketTypeSchema,
+} from '../../proto/spawner/packet/v1/packet_pb'
+import type { ConnectionConfig } from '../common/types'
+import {
+  ActorSchema,
+  AgentActorSchema,
+  PlayerActorSchema,
+} from '../../proto/spawner/actor/v1/actor_pb'
+import {
+  ChannelController,
+  ChannelControllerSchema,
+  ChannelControllerType,
+  ChannelHostSchema,
+  ChannelMemberSchema,
+} from '../../proto/spawner/channel/v1/channel_pb'
+import { LanguageCode } from '../../proto/spawner/language_code/v1/language_code_pb'
+import {
+  CreateWorldEventSchema,
+  WorldControllerSchema,
+  WorldControllerType,
+  WorldController,
+  CreateWorldEvent,
+  AgentConfigurationSchema,
+  AgentCharacterSchema,
+  LoadWorldEventSchema,
+  LoadWorldEvent,
+} from '../../proto/spawner/world/v1/world_pb'
 
-interface OpenSessionProps {
-	sessionToken: SessionToken;
-	onError: ((err: ConnectionError) => void) | undefined;
-	onMessage: ((packet: SpawnerPacket) => void) | undefined;
-	onClose: (() => void) | undefined;
+import type { ConnectionError, Awaitable } from '../common/types'
+import type { Character } from '../entities/character.entity'
+import { PacketError } from '../entities/packets/error.entity'
+import { SpawnerPacket } from '../entities/packets/spawner_packet.entity'
+import type { Player } from '../entities/player.entity'
+import { SessionToken, Session } from '../entities/session_token.entity'
+import { World } from '../entities/world.entity'
+import { Channel } from '../entities/channel.entity'
+
+interface SendProps {
+  sessionToken: SessionToken
+  sendPacket: ProtoPacket
+  onError: ((err: ConnectionError) => void) | undefined
+  onMessage: ((packet: SpawnerPacket) => void) | undefined
+  onClose: (() => void) | undefined
 }
 
 interface ServiceProps {
-	config: ConnectionConfig;
+  config: ConnectionConfig
+  onError: ((err: ConnectionError) => Awaitable<void>)
 }
 
 interface GenerateSessionTokenProps {
-	apiKey: string;
-	apiSecret: string;
-	workspaceId: string;
-	playerId: string;
-	featureConfiguration: FeatureConfiguration;
-  worldId?: string;
+  apiKey: string
+  apiSecret: string
+  workspaceId: string
+  playerId: string
+  featureConfiguration: FeatureConfiguration
+  worldId?: string
+}
+
+interface RefreshSessionTokenProps {
+  refreshToken: string
+  onError: ((err: ConnectionError) => void) | undefined
 }
 
 interface CreateWorldProps {
-  sessionToken: SessionToken;
-  characters: Character[];
+  sessionToken: SessionToken
+  characters: Character[]
 }
 
 interface LoadWorldProps {
-  sessionToken: SessionToken;
-  worldId: string;
+  sessionToken: SessionToken
+  worldId: string
 }
 
 export class SpawnerMainService {
-	private config: ConnectionConfig;
-	private client: Client<MainServiceType>;
+  private config: ConnectionConfig
+  private client: Client<MainServiceType>
+  private onError: ((err: ConnectionError) => Awaitable<void>)
 
-	constructor(props: ServiceProps) {
-		this.config = props.config;
+  constructor(props: ServiceProps) {
+    const {config, onError} = props
+    this.config = config
+    this.onError = onError
 
-		this.client = this.createClient();
-	}
+    this.client = this.createClient()
+  }
 
-	private createClient() {
-		const { hostname, ssl } = this.config.gateway!;
-		const client = createClient(
-			MainService,
-			createGrpcWebTransport({
-				baseUrl: `${ssl ? `https` : `http`}://${hostname}`,
-			}),
-		);
-		return client;
-	}
+  private createClient() {
+    const { hostname, ssl } = this.config.gateway!
+    const client = createClient(
+      MainService,
+      createGrpcWebTransport({
+        baseUrl: `${ssl ? `https` : `http`}://${hostname}`,
+      })
+    )
+    return client
+  }
 
-	async openSession(props: OpenSessionProps): Promise<WritableIterable<ProtoPacket>> {
-		const { sessionToken, onMessage, onError, onClose } = props;
-
-		const connection = createWritableIterable<ProtoPacket>();
-		const options = this.getOptions(sessionToken);
-		const responses = this.client.connectSession(connection, options);
-
-		const processResponses = async () => {
-			try {
-				for await (const res of responses) {
-					if (res.success) {
-						onMessage?.(SpawnerPacket.convertProto(res));
-					} else {
-						// caught spawner packet error
-						const err = PacketError.convertProto(res.error!);
-						onError?.(err);
-					}
-				}
-			} catch (err: unknown) {
-				// caught grpc error
-				onError?.(err);
-			}
-		};
-
-		processResponses();
-
-		return Promise.resolve(connection);
-	}
-
-	async openChannel(sessionToken: SessionToken, players: Player[], characters: Character[]): Promise<Channel> {
-
+  async openChannel(
+    sessionToken: SessionToken,
+    players: Player[],
+    characters: Character[]
+  ) {
     const host = create(ChannelHostSchema, {
       sessionId: sessionToken.sessionId,
-    });
+    })
 
-    const members = [create(ChannelMemberSchema, {
-      sessionId: sessionToken.sessionId,
-    })]
+    const members = [
+      create(ChannelMemberSchema, {
+        sessionId: sessionToken.sessionId,
+      }),
+    ]
 
     const actor = create(ActorSchema, {
-			players: players.map(p => 
+      players: players.map(p =>
         create(PlayerActorSchema, {
-          id: p.id, displayName: p.display_name
+          id: p.id,
+          displayName: p.display_name,
+          ageGroup: p.age_group,
+          gender: p.gender,
+          description: p.description,
         })
-    ),
-			agents: characters.map(c => 
+      ),
+      agents: characters.map(c =>
         create(AgentActorSchema, {
-          id: c.agent?.id
+          id: c.agent?.id,
         })
-      )
-		})
+      ),
+    })
 
     const channelController = create(ChannelControllerSchema, {
-      type: ChannelControllerType.CREATE,
-			host,
-			members,
-			actor,
+      type: ChannelControllerType.CREATE_SERVER_STREAMING,
+      host,
+      members,
+      actor,
     })
 
     const packet = create(SpawnerPacketSchema, {
       type: SpawnerPacketType.CHANNEL_CONTROLLER,
-			payload: {
-				case: "channelController",
-				value: channelController,
-			},
+      payload: {
+        case: 'channelController',
+        value: channelController,
+      },
     })
 
-		const options = this.getOptions(sessionToken);
+    const options = this.getOptions(sessionToken)
 
-		const channelPacket = await this.client.openChannel(packet, options);
+    try{
+      const channelPacket = await this.client.openChannel(packet, options)
+      console.log('channel packet:',channelPacket);
+  
+      const protoChannel = channelPacket.payload.value as ChannelController
+  
+      console.log('proto channel:',protoChannel);
+      const channel = Channel.convertProto(protoChannel)
+      return channel
+    } catch (err:unknown) {
+      this.onError(err);
+    }
+  }
 
-		const protoChannel = channelPacket.payload.value as ChannelController;
+  async generateSessionToken(props: GenerateSessionTokenProps) {
+    const generateSessionTokenRequest = create(
+      GenerateSessionTokenRequestSchema,
+      {
+        apiKey: props.apiKey,
+        apiSecret: props.apiSecret,
+        workspaceId: props.workspaceId,
+        playerId: props.playerId,
+        featureConfiguration: props.featureConfiguration,
+        languageCode: LanguageCode.JA,
+      }
+    )
 
-    const channel = Channel.convertProto(protoChannel);
-		return channel;
-	}
+    const protoSessionToken = await this.client.generateSessionToken(
+      generateSessionTokenRequest
+    )
 
-	async generateSessionToken(props: GenerateSessionTokenProps) {
-    const generateSessionTokenRequest = create(GenerateSessionTokenRequestSchema, {
-      apiKey: props.apiKey,
-			apiSecret: props.apiSecret,
-			workspaceId: props.workspaceId,
-			playerId: props.playerId,
-			featureConfiguration: props.featureConfiguration,
-			languageCode: LanguageCode.JA
-    });
+    const sessionToken = SessionToken.convertProto(protoSessionToken)
 
-		const protoSessionToken = await this.client.generateSessionToken(generateSessionTokenRequest);
+    return sessionToken
+  }
 
-    const sessionToken = SessionToken.convertProto(protoSessionToken);
+  async refreshSessionToken(props: RefreshSessionTokenProps) {
+    const { refreshToken, onError } = props
+    const refreshSessionTokenRequest = create(
+      RefreshSessionTokenRequestSchema,
+      {
+        refreshToken,
+      }
+    )
 
-		return sessionToken;
-	}
+    const protoSessionToken = await this.client.refreshSessionToken(
+      refreshSessionTokenRequest
+    )
 
-  async createWorld(props: CreateWorldProps){
-    const { sessionToken, characters} = props
+    if (protoSessionToken.error) {
+      const err = PacketError.convertProto(protoSessionToken.error)
+      onError?.(err)
+      return
+    }
+
+    const sessionToken = SessionToken.convertProto(protoSessionToken)
+
+    return sessionToken
+  }
+
+  async createWorld(props: CreateWorldProps) {
+    const { sessionToken, characters } = props
     if (!sessionToken.token) {
-			throw Error("Session token is not valid. Generate a session token before creating world.");
-		}
+      throw Error(
+        'Session token is not valid. Generate a session token before creating world.'
+      )
+    }
 
-    const agents = characters.map(c => (
+    const agents = characters.map(c =>
       create(AgentConfigurationSchema, {
         id: c.agent?.id,
         blueprintId: c.agent?.blueprintId,
         displayName: c.agent?.displayName,
         character: create(AgentCharacterSchema, {
-          customId: c.customId
+          customId: c.customId,
         }),
-        objective: c.agent?.objective
+        objective: c.agent?.objective,
       })
-    )
     )
     console.log(agents)
 
     const protoWorld = create(CreateWorldEventSchema, {
-      agents
+      agents,
     })
 
     const worldController = create(WorldControllerSchema, {
       type: WorldControllerType.CREATE,
       payload: {
         value: protoWorld,
-        case: "create"
-      }
+        case: 'create',
+      },
     })
 
     const packet = create(SpawnerPacketSchema, {
       type: SpawnerPacketType.WORLD_CONTROLLER,
       payload: {
-        case: "worldController",
-        value: worldController
-      }
+        case: 'worldController',
+        value: worldController,
+      },
     })
 
-    const options = this.getOptions(sessionToken);
-    const worldPacket = await this.client.createWorld(packet, options);
+    const options = this.getOptions(sessionToken)
+    const worldPacket = await this.client.createWorld(packet, options)
     const packetWorldController = worldPacket.payload.value as WorldController
     const createdWorld = packetWorldController.payload.value as CreateWorldEvent
 
@@ -223,29 +280,29 @@ export class SpawnerMainService {
   }
 
   async LoadWorld(props: LoadWorldProps) {
-    const { worldId, sessionToken } = props;
+    const { worldId, sessionToken } = props
 
     const loadWorldEvent = create(LoadWorldEventSchema, {
-      worldId
+      worldId,
     })
 
     const worldController = create(WorldControllerSchema, {
       type: WorldControllerType.LOAD,
       payload: {
         value: loadWorldEvent,
-        case: "load"
-      }
+        case: 'load',
+      },
     })
 
     const loadWorldRequest = create(SpawnerPacketSchema, {
       type: SpawnerPacketType.WORLD_CONTROLLER,
       payload: {
-        case: "worldController",
-        value: worldController
-      }
+        case: 'worldController',
+        value: worldController,
+      },
     })
 
-    const options = this.getOptions(sessionToken);
+    const options = this.getOptions(sessionToken)
     const worldPacket = await this.client.loadWorld(loadWorldRequest, options)
 
     const packetWorldController = worldPacket.payload.value as WorldController
@@ -255,12 +312,12 @@ export class SpawnerMainService {
   }
 
   private getOptions(sessionToken: SessionToken) {
-		const { token } = sessionToken;
-		const headers = new Headers();
-		headers.set("authorization", token);
-		const options: CallOptions = {
-			headers,
-		};
-		return options;
-	}
+    const { token } = sessionToken
+    const headers = new Headers()
+    headers.set('authorization', token)
+    const options: CallOptions = {
+      headers,
+    }
+    return options
+  }
 }

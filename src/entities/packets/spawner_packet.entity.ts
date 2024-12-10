@@ -23,7 +23,7 @@ import { SentimentEvent as ProtoSentimentEvent } from "../../../proto/spawner/se
 import { PromptInjectionEvent as ProtoPromptInjectionEvent } from "../../../proto/spawner/prompt_injection/v1/prompt_injection_pb";
 import { WorldController as ProtoWorldController } from "../../../proto/spawner/world/v1/world_pb";
 
-enum SpawnerPacketType {
+export enum SpawnerPacketType {
 	UNSPECIFIED = "UNSPECIFIED",
 	SESSION_CONTROLLER = "SESSION_CONTROLLER",
 	CHANNEL_CONTROLLER = "CHANNEL_CONTROLLER",

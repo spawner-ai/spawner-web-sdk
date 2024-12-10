@@ -1,12 +1,15 @@
 {
-  "name": "@spawner/spawner-web-sdk",
+  "name": "@spawner/web-sdk",
   "version": "0.1.0",
   "description": "Web SDK to integrate with Spawner API.",
-  "main": "index.js",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "type": "module",
   "scripts": {
+    "build": "npx tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Warps,Inc.",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.7.5",
@@ -16,6 +19,7 @@
     "@bufbuild/protobuf": "^2.2.2",
     "@bufbuild/protoc-gen-es": "^2.2.2",
     "@connectrpc/connect": "^2.0.0",
-    "@connectrpc/connect-web": "^2.0.0"
+    "@connectrpc/connect-web": "^2.0.0",
+    "uuid": "^11.0.3"
   }
 }
