@@ -27,7 +27,7 @@ import { type WebSocketProps, Connection } from '../connection/websocket-connect
 
 interface ConnectionProps {
 	config: InternalConnectionConfig;
-	apiKey: ApiKey;
+  apiKey?: ApiKey;
 	workspaceId: string;
 	player?: Player;
   characters?: Character[];
@@ -227,16 +227,31 @@ export class ConnectionService {
 		const { feature } = this.connectionProps.config
     const featureConfiguration = create(FeatureConfigurationSchema, feature)
     
+    if (!this.connectionProps.apiKey) {
+      throw Error("Api key is not set. Use setApiKey() to set the api key and secret to generate a session token from the client");
+    }
+    
+    const { key, secret } = this.connectionProps.apiKey;
+    
+    if (!key || !secret) {
+      const missing = !key ? "Api key" : "Api Secret";
+      throw Error(`${missing} is not set. Use setApiKey() to set the ${missing.toLowerCase()} to generate a session token from the client`);
+    }
+    
+    try{
     const sessionToken = await this.mainService.generateSessionToken({
-			apiKey: this.connectionProps.apiKey.key,
-			apiSecret: this.connectionProps.apiKey.secret,
+        apiKey: key,
+        apiSecret: secret,
 			workspaceId: this.connectionProps.workspaceId,
 			playerId: this.players[0].id,
-			featureConfiguration
+        featureConfiguration,
 		});
 
 		this.sessionToken = sessionToken;
 		return sessionToken;
+    } catch(err) {
+      throw err;
+    }    
 	}
 
   async refreshSessionToken(refreshToken: string) {
@@ -266,7 +281,7 @@ export class ConnectionService {
 			this.players = Array.of(player);
 		} else {
 			const defaultPlayer = new Player({
-				id: "player-1",
+				id: "player",
 				display_name: "Player",
 			});
 			this.players = Array.of(defaultPlayer);

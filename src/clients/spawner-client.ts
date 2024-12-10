@@ -32,7 +32,7 @@ export class SpawnerClient {
 
 		return new ConnectionService({
 			config,
-			apiKey: this.apiKey!,
+      apiKey: this.apiKey,
 			workspaceId: this.workspaceId!,
       sessionAccessor: this.sessionAccessor,
 			player: this.player,
@@ -52,7 +52,6 @@ export class SpawnerClient {
 
 		const service = new ConnectionService({
 			config,
-			apiKey: this.apiKey!,
 			workspaceId: this.workspaceId!,
       onOpen: this.onOpen,
 			onError: this.onError,
@@ -72,9 +71,8 @@ export class SpawnerClient {
 		return config;
 	}
 
-	setApiKey(apiKey: ApiKey) {
-		this.apiKey = apiKey;
-
+  setApiKey(key: ApiKey) {
+    this.apiKey = key;
 		return this;
 	}
 
