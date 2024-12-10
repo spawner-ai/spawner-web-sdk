@@ -151,13 +151,10 @@ export class SpawnerMainService {
 
     try{
       const channelPacket = await this.client.openChannel(packet, options)
-      console.log('channel packet:',channelPacket);
       if(channelPacket.error){
         throw channelPacket.error
       }
       const protoChannel = channelPacket.payload.value as ChannelController
-  
-      console.log('proto channel:',protoChannel);
       const channel = Channel.convertProto(protoChannel)
       return channel
     } catch (err:unknown) {
@@ -234,7 +231,6 @@ export class SpawnerMainService {
         objective: c.agent?.objective,
       })
     )
-    console.log(agents)
 
     const protoWorld = create(CreateWorldEventSchema, {
       agents,
