@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file spawner/text/v1/text.proto.
  */
 export const file_spawner_text_v1_text: GenFile = /*@__PURE__*/
-  fileDesc("ChpzcGF3bmVyL3RleHQvdjEvdGV4dC5wcm90bxIPc3Bhd25lci50ZXh0LnYxIjMKEENvbW1hbmRUcmlnZ2VyZWQSDAoEbmFtZRgBIAEoCRIRCgljdXN0b21faWQYAiABKAkivwEKCVRleHRFdmVudBIUCgx1dHRlcmFuY2VfaWQYASABKAkSDAoEdGV4dBgCIAEoCRINCgVkZWx0YRgDIAEoCRINCgVmaW5hbBgEIAEoCBIyCgdjb21tYW5kGAUgASgLMiEuc3Bhd25lci50ZXh0LnYxLkNvbW1hbmRUcmlnZ2VyZWQSPAoNZmllbGRfb2ZfdmlldxgGIAEoCzIlLnNwYXduZXIuZmllbGRfb2Zfdmlldy52MS5GaWVsZE9mVmlld0J+ChNjb20uc3Bhd25lci50ZXh0LnYxQglUZXh0UHJvdG9QAaICA1NUWKoCD1NwYXduZXIuVGV4dC5WMcoCD1NwYXduZXJcVGV4dFxWMeICG1NwYXduZXJcVGV4dFxWMVxHUEJNZXRhZGF0YeoCEVNwYXduZXI6OlRleHQ6OlYxYgZwcm90bzM", [file_spawner_field_of_view_v1_field_of_view]);
+  fileDesc("ChpzcGF3bmVyL3RleHQvdjEvdGV4dC5wcm90bxIPc3Bhd25lci50ZXh0LnYxIkoKEENvbW1hbmRUcmlnZ2VyZWQSDAoEbmFtZRgBIAEoCRIVCgljdXN0b21faWQYAiABKAlCAhgBEhEKCWNsaWVudF9pZBgDIAEoCSK/AQoJVGV4dEV2ZW50EhQKDHV0dGVyYW5jZV9pZBgBIAEoCRIMCgR0ZXh0GAIgASgJEg0KBWRlbHRhGAMgASgJEg0KBWZpbmFsGAQgASgIEjIKB2NvbW1hbmQYBSABKAsyIS5zcGF3bmVyLnRleHQudjEuQ29tbWFuZFRyaWdnZXJlZBI8Cg1maWVsZF9vZl92aWV3GAYgASgLMiUuc3Bhd25lci5maWVsZF9vZl92aWV3LnYxLkZpZWxkT2ZWaWV3Qn4KE2NvbS5zcGF3bmVyLnRleHQudjFCCVRleHRQcm90b1ABogIDU1RYqgIPU3Bhd25lci5UZXh0LlYxygIPU3Bhd25lclxUZXh0XFYx4gIbU3Bhd25lclxUZXh0XFYxXEdQQk1ldGFkYXRh6gIRU3Bhd25lcjo6VGV4dDo6VjFiBnByb3RvMw", [file_spawner_field_of_view_v1_field_of_view]);
 
 /**
  * @generated from message spawner.text.v1.CommandTriggered
@@ -29,9 +29,18 @@ export type CommandTriggered = Message<"spawner.text.v1.CommandTriggered"> & {
   /**
    * Custom identifier set in the workspace.
    *
-   * @generated from field: string custom_id = 2;
+   * @generated from field: string custom_id = 2 [deprecated = true];
+   * @deprecated
    */
   customId: string;
+
+  /**
+   * Custom identifier used in the client. This may be set in the console. This
+   * replaced `custom_id`.
+   *
+   * @generated from field: string client_id = 3;
+   */
+  clientId: string;
 };
 
 /**

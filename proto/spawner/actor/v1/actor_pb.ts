@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file spawner/actor/v1/actor.proto.
  */
 export const file_spawner_actor_v1_actor: GenFile = /*@__PURE__*/
-  fileDesc("ChxzcGF3bmVyL2FjdG9yL3YxL2FjdG9yLnByb3RvEhBzcGF3bmVyLmFjdG9yLnYxImcKC1BsYXllckFjdG9yEgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIRCglhZ2VfZ3JvdXAYAyABKAkSDgoGZ2VuZGVyGAQgASgJEhMKC2Rlc2NyaXB0aW9uGAUgASgJIlkKDkNoYXJhY3RlckFjdG9yEgwKBG5hbWUYASABKAkSFAoMZGlzcGxheV9uYW1lGAIgASgJEhEKCWN1c3RvbV9pZBgDIAEoCRIQCghhZ2VudF9pZBgEIAEoCSIYCgpBZ2VudEFjdG9yEgoKAmlkGAEgASgJIp8BCgVBY3RvchIuCgdwbGF5ZXJzGAEgAygLMh0uc3Bhd25lci5hY3Rvci52MS5QbGF5ZXJBY3RvchI4CgpjaGFyYWN0ZXJzGAIgAygLMiAuc3Bhd25lci5hY3Rvci52MS5DaGFyYWN0ZXJBY3RvckICGAESLAoGYWdlbnRzGAMgAygLMhwuc3Bhd25lci5hY3Rvci52MS5BZ2VudEFjdG9yIkcKFkNoYXJhY3Rlck11dGF0aW9uRXZlbnQSFQoJY3VzdG9tX2lkGAEgASgJQgIYARIWCgpuYXJyYXRpdmVzGAIgAygJQgIYAUKEAQoUY29tLnNwYXduZXIuYWN0b3IudjFCCkFjdG9yUHJvdG9QAaICA1NBWKoCEFNwYXduZXIuQWN0b3IuVjHKAhBTcGF3bmVyXEFjdG9yXFYx4gIcU3Bhd25lclxBY3RvclxWMVxHUEJNZXRhZGF0YeoCElNwYXduZXI6OkFjdG9yOjpWMWIGcHJvdG8z");
+  fileDesc("ChxzcGF3bmVyL2FjdG9yL3YxL2FjdG9yLnByb3RvEhBzcGF3bmVyLmFjdG9yLnYxImcKC1BsYXllckFjdG9yEgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCRIRCglhZ2VfZ3JvdXAYAyABKAkSDgoGZ2VuZGVyGAQgASgJEhMKC2Rlc2NyaXB0aW9uGAUgASgJIhgKCkFnZW50QWN0b3ISCgoCaWQYASABKAkiZQoFQWN0b3ISLgoHcGxheWVycxgBIAMoCzIdLnNwYXduZXIuYWN0b3IudjEuUGxheWVyQWN0b3ISLAoGYWdlbnRzGAMgAygLMhwuc3Bhd25lci5hY3Rvci52MS5BZ2VudEFjdG9yQoQBChRjb20uc3Bhd25lci5hY3Rvci52MUIKQWN0b3JQcm90b1ABogIDU0FYqgIQU3Bhd25lci5BY3Rvci5WMcoCEFNwYXduZXJcQWN0b3JcVjHiAhxTcGF3bmVyXEFjdG9yXFYxXEdQQk1ldGFkYXRh6gISU3Bhd25lcjo6QWN0b3I6OlYxYgZwcm90bzM");
 
 /**
  * Encapsulates properties of a player. Used to populate the
@@ -66,52 +66,6 @@ export const PlayerActorSchema: GenMessage<PlayerActor> = /*@__PURE__*/
   messageDesc(file_spawner_actor_v1_actor, 0);
 
 /**
- * Deprecated. Encapsulates the identifiers of a character.
- *
- * @generated from message spawner.actor.v1.CharacterActor
- */
-export type CharacterActor = Message<"spawner.actor.v1.CharacterActor"> & {
-  /**
-   * Only output. Relative resource path.
-   * Format: `workspaces:{workspace_id}:characters:{character_id}`
-   *
-   * @generated from field: string name = 1;
-   */
-  name: string;
-
-  /**
-   * Name of the character.
-   *
-   * @generated from field: string display_name = 2;
-   */
-  displayName: string;
-
-  /**
-   * Indicates the custom identifier of the character. Note that it
-   * may differ from the character id used for storage.
-   *
-   * @generated from field: string custom_id = 3;
-   */
-  customId: string;
-
-  /**
-   * Indicates the agent id of the character. Value should exist if the
-   * character is being used as an agent. If the character is used without agent
-   * running, this may be left empty.
-   *
-   * @generated from field: string agent_id = 4;
-   */
-  agentId: string;
-};
-
-/**
- * Describes the message spawner.actor.v1.CharacterActor.
- * Use `create(CharacterActorSchema)` to create a new message.
- */
-export const CharacterActorSchema: GenMessage<CharacterActor> = /*@__PURE__*/
-  messageDesc(file_spawner_actor_v1_actor, 1);
-
-/**
  * @generated from message spawner.actor.v1.AgentActor
  */
 export type AgentActor = Message<"spawner.actor.v1.AgentActor"> & {
@@ -129,7 +83,7 @@ export type AgentActor = Message<"spawner.actor.v1.AgentActor"> & {
  * Use `create(AgentActorSchema)` to create a new message.
  */
 export const AgentActorSchema: GenMessage<AgentActor> = /*@__PURE__*/
-  messageDesc(file_spawner_actor_v1_actor, 2);
+  messageDesc(file_spawner_actor_v1_actor, 1);
 
 /**
  * Defines the actors within a channel.
@@ -143,12 +97,8 @@ export type Actor = Message<"spawner.actor.v1.Actor"> & {
   players: PlayerActor[];
 
   /**
-   * @generated from field: repeated spawner.actor.v1.CharacterActor characters = 2 [deprecated = true];
-   * @deprecated
-   */
-  characters: CharacterActor[];
-
-  /**
+   * removed: 2
+   *
    * @generated from field: repeated spawner.actor.v1.AgentActor agents = 3;
    */
   agents: AgentActor[];
@@ -159,37 +109,5 @@ export type Actor = Message<"spawner.actor.v1.Actor"> & {
  * Use `create(ActorSchema)` to create a new message.
  */
 export const ActorSchema: GenMessage<Actor> = /*@__PURE__*/
-  messageDesc(file_spawner_actor_v1_actor, 3);
-
-/**
- * Deprecated.
- *
- * @generated from message spawner.actor.v1.CharacterMutationEvent
- */
-export type CharacterMutationEvent = Message<"spawner.actor.v1.CharacterMutationEvent"> & {
-  /**
-   * Indicates the custom identifier of the character. Note that it
-   * may differ from the character id used for storage.
-   *
-   * @generated from field: string custom_id = 1 [deprecated = true];
-   * @deprecated
-   */
-  customId: string;
-
-  /**
-   * List of strings depicting the inner monologue/narrative of the character.
-   * Client is able to modify this at runtime.
-   *
-   * @generated from field: repeated string narratives = 2 [deprecated = true];
-   * @deprecated
-   */
-  narratives: string[];
-};
-
-/**
- * Describes the message spawner.actor.v1.CharacterMutationEvent.
- * Use `create(CharacterMutationEventSchema)` to create a new message.
- */
-export const CharacterMutationEventSchema: GenMessage<CharacterMutationEvent> = /*@__PURE__*/
-  messageDesc(file_spawner_actor_v1_actor, 4);
+  messageDesc(file_spawner_actor_v1_actor, 2);
 

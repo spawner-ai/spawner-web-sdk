@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file spawner/quest/v1/quest.proto.
  */
 export const file_spawner_quest_v1_quest: GenFile = /*@__PURE__*/
-  fileDesc("ChxzcGF3bmVyL3F1ZXN0L3YxL3F1ZXN0LnByb3RvEhBzcGF3bmVyLnF1ZXN0LnYxIosBCgpRdWVzdEV2ZW50Ei4KBHR5cGUYASABKA4yIC5zcGF3bmVyLnF1ZXN0LnYxLlF1ZXN0RXZlbnRUeXBlEgwKBG5hbWUYAiABKAkSEQoJY3VzdG9tX2lkGAMgASgJEhcKD2lzc3Vlcl9hZ2VudF9pZBgEIAEoCRITCgtmbGF2b3JfdGV4dBgFIAEoCSpPCg5RdWVzdEV2ZW50VHlwZRIgChxRVUVTVF9FVkVOVF9UWVBFX1VOU1BFQ0lGSUVEEAASGwoXUVVFU1RfRVZFTlRfVFlQRV9JTlZPS0UQAUKEAQoUY29tLnNwYXduZXIucXVlc3QudjFCClF1ZXN0UHJvdG9QAaICA1NRWKoCEFNwYXduZXIuUXVlc3QuVjHKAhBTcGF3bmVyXFF1ZXN0XFYx4gIcU3Bhd25lclxRdWVzdFxWMVxHUEJNZXRhZGF0YeoCElNwYXduZXI6OlF1ZXN0OjpWMWIGcHJvdG8z");
+  fileDesc("ChxzcGF3bmVyL3F1ZXN0L3YxL3F1ZXN0LnByb3RvEhBzcGF3bmVyLnF1ZXN0LnYxIqIBCgpRdWVzdEV2ZW50Ei4KBHR5cGUYASABKA4yIC5zcGF3bmVyLnF1ZXN0LnYxLlF1ZXN0RXZlbnRUeXBlEgwKBG5hbWUYAiABKAkSFQoJY3VzdG9tX2lkGAMgASgJQgIYARIXCg9pc3N1ZXJfYWdlbnRfaWQYBCABKAkSEwoLZmxhdm9yX3RleHQYBSABKAkSEQoJY2xpZW50X2lkGAYgASgJKk8KDlF1ZXN0RXZlbnRUeXBlEiAKHFFVRVNUX0VWRU5UX1RZUEVfVU5TUEVDSUZJRUQQABIbChdRVUVTVF9FVkVOVF9UWVBFX0lOVk9LRRABQoQBChRjb20uc3Bhd25lci5xdWVzdC52MUIKUXVlc3RQcm90b1ABogIDU1FYqgIQU3Bhd25lci5RdWVzdC5WMcoCEFNwYXduZXJcUXVlc3RcVjHiAhxTcGF3bmVyXFF1ZXN0XFYxXEdQQk1ldGFkYXRh6gISU3Bhd25lcjo6UXVlc3Q6OlYxYgZwcm90bzM");
 
 /**
  * Only output. Quests may be generated depending on the objective,
@@ -36,7 +36,8 @@ export type QuestEvent = Message<"spawner.quest.v1.QuestEvent"> & {
   /**
    * Indicates the custom identifier of the quest.
    *
-   * @generated from field: string custom_id = 3;
+   * @generated from field: string custom_id = 3 [deprecated = true];
+   * @deprecated
    */
   customId: string;
 
@@ -53,6 +54,13 @@ export type QuestEvent = Message<"spawner.quest.v1.QuestEvent"> & {
    * @generated from field: string flavor_text = 5;
    */
   flavorText: string;
+
+  /**
+   * Indicates the custom identifier of the quest. Replaces `custom_id`.
+   *
+   * @generated from field: string client_id = 6;
+   */
+  clientId: string;
 };
 
 /**

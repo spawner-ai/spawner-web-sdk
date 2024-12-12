@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file spawner/routing/v1/routing.proto.
  */
 export const file_spawner_routing_v1_routing: GenFile = /*@__PURE__*/
-  fileDesc("CiBzcGF3bmVyL3JvdXRpbmcvdjEvcm91dGluZy5wcm90bxISc3Bhd25lci5yb3V0aW5nLnYxIi8KC0V2ZW50UGxheWVyEgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCSJFCg5FdmVudENoYXJhY3RlchIKCgJpZBgBIAEoCRIRCgljdXN0b21faWQYAiABKAkSFAoMZGlzcGxheV9uYW1lGAMgASgJIhgKCkV2ZW50QWdlbnQSCgoCaWQYASABKAki6gEKCkV2ZW50QWN0b3ISMAoEdHlwZRgBIAEoDjIiLnNwYXduZXIucm91dGluZy52MS5FdmVudEFjdG9yVHlwZRIxCgZwbGF5ZXIYAiABKAsyHy5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRQbGF5ZXJIABI7CgljaGFyYWN0ZXIYAyABKAsyIi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRDaGFyYWN0ZXJCAhgBSAASLwoFYWdlbnQYBCABKAsyHi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRBZ2VudEgAQgkKB3BheWxvYWQiaQoHUm91dGluZxIuCgZzb3VyY2UYASABKAsyHi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRBY3RvchIuCgZ0YXJnZXQYAiABKAsyHi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRBY3RvciqqAQoORXZlbnRBY3RvclR5cGUSIAocRVZFTlRfQUNUT1JfVFlQRV9VTlNQRUNJRklFRBAAEhsKF0VWRU5UX0FDVE9SX1RZUEVfUExBWUVSEAESIgoaRVZFTlRfQUNUT1JfVFlQRV9DSEFSQUNURVIQAhoCCAESGgoWRVZFTlRfQUNUT1JfVFlQRV9BR0VOVBADEhkKFUVWRU5UX0FDVE9SX1RZUEVfSEVSRRAEQpABChZjb20uc3Bhd25lci5yb3V0aW5nLnYxQgxSb3V0aW5nUHJvdG9QAaICA1NSWKoCElNwYXduZXIuUm91dGluZy5WMcoCElNwYXduZXJcUm91dGluZ1xWMeICHlNwYXduZXJcUm91dGluZ1xWMVxHUEJNZXRhZGF0YeoCFFNwYXduZXI6OlJvdXRpbmc6OlYxYgZwcm90bzM");
+  fileDesc("CiBzcGF3bmVyL3JvdXRpbmcvdjEvcm91dGluZy5wcm90bxISc3Bhd25lci5yb3V0aW5nLnYxIi8KC0V2ZW50UGxheWVyEgoKAmlkGAEgASgJEhQKDGRpc3BsYXlfbmFtZRgCIAEoCSIYCgpFdmVudEFnZW50EgoKAmlkGAEgASgJIq0BCgpFdmVudEFjdG9yEjAKBHR5cGUYASABKA4yIi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRBY3RvclR5cGUSMQoGcGxheWVyGAIgASgLMh8uc3Bhd25lci5yb3V0aW5nLnYxLkV2ZW50UGxheWVySAASLwoFYWdlbnQYBCABKAsyHi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRBZ2VudEgAQgkKB3BheWxvYWQiaQoHUm91dGluZxIuCgZzb3VyY2UYASABKAsyHi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRBY3RvchIuCgZ0YXJnZXQYAiABKAsyHi5zcGF3bmVyLnJvdXRpbmcudjEuRXZlbnRBY3RvciqGAQoORXZlbnRBY3RvclR5cGUSIAocRVZFTlRfQUNUT1JfVFlQRV9VTlNQRUNJRklFRBAAEhsKF0VWRU5UX0FDVE9SX1RZUEVfUExBWUVSEAESGgoWRVZFTlRfQUNUT1JfVFlQRV9BR0VOVBADEhkKFUVWRU5UX0FDVE9SX1RZUEVfSEVSRRAEQpABChZjb20uc3Bhd25lci5yb3V0aW5nLnYxQgxSb3V0aW5nUHJvdG9QAaICA1NSWKoCElNwYXduZXIuUm91dGluZy5WMcoCElNwYXduZXJcUm91dGluZ1xWMeICHlNwYXduZXJcUm91dGluZ1xWMVxHUEJNZXRhZGF0YeoCFFNwYXduZXI6OlJvdXRpbmc6OlYxYgZwcm90bzM");
 
 /**
  * @generated from message spawner.routing.v1.EventPlayer
@@ -37,37 +37,6 @@ export const EventPlayerSchema: GenMessage<EventPlayer> = /*@__PURE__*/
   messageDesc(file_spawner_routing_v1_routing, 0);
 
 /**
- * @generated from message spawner.routing.v1.EventCharacter
- */
-export type EventCharacter = Message<"spawner.routing.v1.EventCharacter"> & {
-  /**
-   * Output only.
-   *
-   * @generated from field: string id = 1;
-   */
-  id: string;
-
-  /**
-   * @generated from field: string custom_id = 2;
-   */
-  customId: string;
-
-  /**
-   * Output only.
-   *
-   * @generated from field: string display_name = 3;
-   */
-  displayName: string;
-};
-
-/**
- * Describes the message spawner.routing.v1.EventCharacter.
- * Use `create(EventCharacterSchema)` to create a new message.
- */
-export const EventCharacterSchema: GenMessage<EventCharacter> = /*@__PURE__*/
-  messageDesc(file_spawner_routing_v1_routing, 1);
-
-/**
  * @generated from message spawner.routing.v1.EventAgent
  */
 export type EventAgent = Message<"spawner.routing.v1.EventAgent"> & {
@@ -82,7 +51,7 @@ export type EventAgent = Message<"spawner.routing.v1.EventAgent"> & {
  * Use `create(EventAgentSchema)` to create a new message.
  */
 export const EventAgentSchema: GenMessage<EventAgent> = /*@__PURE__*/
-  messageDesc(file_spawner_routing_v1_routing, 2);
+  messageDesc(file_spawner_routing_v1_routing, 1);
 
 /**
  * @generated from message spawner.routing.v1.EventActor
@@ -104,13 +73,6 @@ export type EventActor = Message<"spawner.routing.v1.EventActor"> & {
     case: "player";
   } | {
     /**
-     * @generated from field: spawner.routing.v1.EventCharacter character = 3 [deprecated = true];
-     * @deprecated
-     */
-    value: EventCharacter;
-    case: "character";
-  } | {
-    /**
      * @generated from field: spawner.routing.v1.EventAgent agent = 4;
      */
     value: EventAgent;
@@ -123,7 +85,7 @@ export type EventActor = Message<"spawner.routing.v1.EventActor"> & {
  * Use `create(EventActorSchema)` to create a new message.
  */
 export const EventActorSchema: GenMessage<EventActor> = /*@__PURE__*/
-  messageDesc(file_spawner_routing_v1_routing, 3);
+  messageDesc(file_spawner_routing_v1_routing, 2);
 
 /**
  * @generated from message spawner.routing.v1.Routing
@@ -150,7 +112,7 @@ export type Routing = Message<"spawner.routing.v1.Routing"> & {
  * Use `create(RoutingSchema)` to create a new message.
  */
 export const RoutingSchema: GenMessage<Routing> = /*@__PURE__*/
-  messageDesc(file_spawner_routing_v1_routing, 4);
+  messageDesc(file_spawner_routing_v1_routing, 3);
 
 /**
  * @generated from enum spawner.routing.v1.EventActorType
@@ -167,12 +129,8 @@ export enum EventActorType {
   PLAYER = 1,
 
   /**
-   * @generated from enum value: EVENT_ACTOR_TYPE_CHARACTER = 2 [deprecated = true];
-   * @deprecated
-   */
-  CHARACTER = 2,
-
-  /**
+   * removed: 2
+   *
    * @generated from enum value: EVENT_ACTOR_TYPE_AGENT = 3;
    */
   AGENT = 3,
