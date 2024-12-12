@@ -164,9 +164,6 @@ export class SpawnerClient {
   }
 
   private validate() {
-    if (!this.apiKey?.key || !this.apiKey.secret) {
-      throw Error('Api key is required')
-    }
     if (!this.workspaceId) {
       throw Error('Workspace ID is required')
     }
