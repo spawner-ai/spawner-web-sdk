@@ -52,24 +52,6 @@ export class SpawnerClient {
     })
   }
 
-  async generateSessionToken() {
-    this.validate()
-
-    const config = this.ensureConfig()
-
-    const service = new ConnectionService({
-      config,
-      workspaceId: this.workspaceId!,
-      onOpen: this.onOpen,
-      onError: this.onError,
-      onMessage: this.onMessage,
-      onClose: this.onClose,
-    })
-
-    const token = await service.generateSessionToken()
-    return token
-  }
-
   private ensureConfig() {
     const gateway: Gateway = this.ensureGateway(this.config?.gateway)
     const feature: FeatureConfiguration = this.ensureFeature(this.config?.feature)
