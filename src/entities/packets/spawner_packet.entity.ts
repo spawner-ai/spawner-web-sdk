@@ -2,7 +2,7 @@ import { create } from '@bufbuild/protobuf'
 import {
   type SpawnerPacket as ProtoPacket,
   SpawnerPacketType as ProtoSpawnerPacketType,
-} from '../../../proto/spawner/packet/v1/packet_pb'
+} from '@/proto/packet/v1/packet_pb'
 import { ChannelController } from './channel_controller'
 import { EmotionEvent } from './emotion.entity'
 import { PacketError } from './error.entity'
@@ -14,14 +14,14 @@ import { SentimentEvent } from './sentiment.entity'
 import { PromptInjectionEvent } from './prompt_injection.entity'
 import { WorldController } from './world_controller.entity'
 import { Timestamp, TimestampSchema } from '@bufbuild/protobuf/wkt'
-import { TextEvent as ProtoTextEvent } from '../../../proto/spawner/text/v1/text_pb'
-import { EmotionEvent as ProtoEmotionEvent } from '../../../proto/spawner/emotion/v1/emotion_pb'
-import { KnowledgeEvent as ProtoKnowledgeEvent } from '../../../proto/spawner/knowledge/v1/knowledge_pb'
-import { InputFilterEvent as ProtoInputFilterEvent } from '../../../proto/spawner/input_filter/v1/input_filter_pb'
-import { ChannelController as ProtoChannelController } from '../../../proto/spawner/channel/v1/channel_pb'
-import { SentimentEvent as ProtoSentimentEvent } from '../../../proto/spawner/sentiment/v1/sentiment_pb'
-import { PromptInjectionEvent as ProtoPromptInjectionEvent } from '../../../proto/spawner/prompt_injection/v1/prompt_injection_pb'
-import { WorldController as ProtoWorldController } from '../../../proto/spawner/world/v1/world_pb'
+import { TextEvent as ProtoTextEvent } from '@/proto/packets/text/v1/text_pb'
+import { EmotionEvent as ProtoEmotionEvent } from '@/proto/packets/emotion/v1/emotion_pb'
+import { KnowledgeEvent as ProtoKnowledgeEvent } from '@/proto/packets/knowledge/v1/knowledge_pb'
+import { InputFilterEvent as ProtoInputFilterEvent } from '@/proto/packets/input_filter/v1/input_filter_pb'
+import { ChannelController as ProtoChannelController } from '@/proto/packets/channel/v1/channel_pb'
+import { SentimentEvent as ProtoSentimentEvent } from '@/proto/packets/sentiment/v1/sentiment_pb'
+import { PromptInjectionEvent as ProtoPromptInjectionEvent } from '@/proto/packets/prompt_injection/v1/prompt_injection_pb'
+import { WorldController as ProtoWorldController } from '@/proto/packets/world/v1/world_pb'
 
 export enum SpawnerPacketType {
   UNSPECIFIED = 'UNSPECIFIED',

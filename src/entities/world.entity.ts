@@ -1,4 +1,4 @@
-import { CreateWorldEvent, LoadWorldEvent } from '../../proto/spawner/world/v1/world_pb'
+import { CreateWorldEvent, LoadWorldEvent } from '@/proto/packets/world/v1/world_pb'
 import { Character } from './character.entity'
 
 export interface WorldProps {

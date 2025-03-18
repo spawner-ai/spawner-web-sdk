@@ -1,5 +1,5 @@
 import { Awaitable, ConnectionError } from '../common/types'
-import { SpawnerPacket as ProtoPacket } from '../../proto/spawner/packet/v1/packet_pb'
+import { SpawnerPacket as ProtoPacket } from '@/proto/packet/v1/packet_pb'
 import { SpawnerPacket } from '../entities/packets/spawner_packet.entity'
 import { SessionToken } from '../entities/session_token.entity'
 import { isSpawnerPacket } from '../utils/typeGuard'

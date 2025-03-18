@@ -2,7 +2,7 @@ import {
   EmotionResult,
   type EmotionEvent as ProtoEmotion,
   type EmotionScore as ProtoEmotionScore,
-} from '../../../proto/spawner/emotion/v1/emotion_pb'
+} from '@/proto/packets/emotion/v1/emotion_pb'
 
 enum EmotionType {
   UNSPECIFIED = 'UNSPECIFIED',

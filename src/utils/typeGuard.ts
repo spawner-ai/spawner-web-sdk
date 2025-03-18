@@ -1,12 +1,13 @@
-import type { ChannelController } from '../../proto/spawner/channel/v1/channel_pb'
-import type { InputFilterEvent } from '../../proto/spawner/input_filter/v1/input_filter_pb'
-import type { EmotionEvent } from '../../proto/spawner/emotion/v1/emotion_pb'
-import type { KnowledgeEvent } from '../../proto/spawner/knowledge/v1/knowledge_pb'
-import type { SentimentEvent } from '../../proto/spawner/sentiment/v1/sentiment_pb'
-import type { PromptInjectionEvent } from '../../proto/spawner/prompt_injection/v1/prompt_injection_pb'
-import type { WorldController } from '../../proto/spawner/world/v1/world_pb'
-import type { AgentEvent } from '../../proto/spawner/agent/v1/agent_pb'
-import type { SpawnerPacket } from '../../proto/spawner/packet/v1/packet_pb'
+import type { ChannelController } from '@/proto/packets/channel/v1/channel_pb'
+import type { InputFilterEvent } from '@/proto/packets/input_filter/v1/input_filter_pb'
+import type { EmotionEvent } from '@/proto/packets/emotion/v1/emotion_pb'
+import type { KnowledgeEvent } from '@/proto/packets/knowledge/v1/knowledge_pb'
+import type { SentimentEvent } from '@/proto/packets/sentiment/v1/sentiment_pb'
+import type { PromptInjectionEvent } from '@/proto/packets/prompt_injection/v1/prompt_injection_pb'
+import type { WorldController } from '@/proto/packets/world/v1/world_pb'
+import type { AgentController } from '@/proto/packets/agent/v1/agent_pb'
+import type { SpawnerPacket } from '@/proto/packet/v1/packet_pb'
+import type { TextEvent } from '@/proto/packet_components/text/v1/text_pb'
 
 type PayloadCase<T> = { case: string, value: T }
 
@@ -18,8 +19,8 @@ type PayloadMapping = {
   sentiment: SentimentEvent
   promptInjection: PromptInjectionEvent
   worldController: WorldController
-  agent: AgentEvent
-  text: TextEvent // Assume TextEvent is defined
+  agentController: AgentController
+  text: TextEvent
 }
 
 type UndefinedCase = { case: undefined, value?: undefined }
@@ -61,7 +62,7 @@ export const isSpawnerPacket = (message: unknown): message is SpawnerPacket => {
     || isPayloadCase(payload, 'sentiment')
     || isPayloadCase(payload, 'promptInjection')
     || isPayloadCase(payload, 'worldController')
-    || isPayloadCase(payload, 'agent')
+    || isPayloadCase(payload, 'agentController')
     || !isUndefinedCase(payload)
   )
 }

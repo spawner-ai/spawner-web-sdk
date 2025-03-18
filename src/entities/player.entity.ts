@@ -1,4 +1,4 @@
-import type { PlayerActor } from '../../proto/spawner/actor/v1/actor_pb'
+import type { PlayerActor } from '@/proto/packets/actor/v1/actor_pb'
 
 type AgeGroup = 'NONE' | 'CHILD' | 'TEEN' | 'ADULT' | 'ELDERLY'
 type Gender = 'NONE' | 'MALE' | 'FEMALE'

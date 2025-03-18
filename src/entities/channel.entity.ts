@@ -1,4 +1,4 @@
-import type { ChannelController } from '../../proto/spawner/channel/v1/channel_pb'
+import type { ChannelController } from '@/proto/packets/channel/v1/channel_pb'
 import { Character } from './character.entity'
 import { Player } from './player.entity'
 

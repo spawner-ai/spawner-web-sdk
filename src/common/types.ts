@@ -8,8 +8,8 @@ import {
   GetSessionResponseSchema,
   LeaveChannelRequestSchema,
   LeaveChannelResponseSchema,
-} from '../../proto/spawner/main/v1/main_pb'
-import type { SpawnerPacketSchema } from '../../proto/spawner/packet/v1/packet_pb'
+} from '@/proto/main/v1/main_pb'
+import type { SpawnerPacketSchema } from '@/proto/packet/v1/packet_pb'
 import type { PacketError } from '../entities/packets/error.entity'
 import type { SessionToken } from '../entities/session_token.entity'
 

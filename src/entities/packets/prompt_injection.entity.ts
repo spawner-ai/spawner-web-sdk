@@ -1,7 +1,7 @@
 import {
   PromptInjectionEvent as ProtoPromptInjectionEvent,
   PromptInjectionDetectorResult as ProtoPromptInjectionDetectorResult,
-} from '../../../proto/spawner/prompt_injection/v1/prompt_injection_pb'
+} from '@/proto/packets/prompt_injection/v1/prompt_injection_pb'
 
 interface PromptInjectionDetectorResultProps {
   jailbreak: number

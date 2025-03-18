@@ -3,7 +3,7 @@ import {
   ChannelControllerType as ProtoChannelControllerType,
   type ChannelHost as ProtoChannelHost,
   type ChannelMember as ProtoChannelMember,
-} from '../../../proto/spawner/channel/v1/channel_pb'
+} from '@/proto/packets/channel/v1/channel_pb'
 import { Actor } from './actor.entity'
 
 enum ChannelControllerType {

@@ -1,4 +1,4 @@
-import type { Actor as ProtoActor } from '../../../proto/spawner/actor/v1/actor_pb'
+import type { Actor as ProtoActor } from '@/proto/packets/actor/v1/actor_pb'
 
 import { Character } from '../character.entity'
 import { Player } from '../player.entity'

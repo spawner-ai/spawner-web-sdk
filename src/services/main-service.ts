@@ -10,28 +10,28 @@ import {
   GenerateSessionTokenRequestSchema,
   MainService,
   RefreshSessionTokenRequestSchema,
-} from '../../proto/spawner/main/v1/main_pb'
+} from '@/proto/main/v1/main_pb'
 import { MainServiceType } from '../common/types'
-import { type FeatureConfiguration } from '../../proto/spawner/main/v1/main_pb'
+import { type FeatureConfiguration } from '@/proto/main/v1/main_pb'
 import {
   SpawnerPacketSchema,
   SpawnerPacket as ProtoPacket,
   SpawnerPacketType,
-} from '../../proto/spawner/packet/v1/packet_pb'
+} from '@/proto/packet/v1/packet_pb'
 import type { ConnectionConfig } from '../common/types'
 import {
   ActorSchema,
   AgentActorSchema,
   PlayerActorSchema,
-} from '../../proto/spawner/actor/v1/actor_pb'
+} from '@/proto/packets/actor/v1/actor_pb'
 import {
   ChannelController,
   ChannelControllerSchema,
   ChannelControllerType,
   ChannelHostSchema,
   ChannelMemberSchema,
-} from '../../proto/spawner/channel/v1/channel_pb'
-import { LanguageCode } from '../../proto/spawner/language_code/v1/language_code_pb'
+} from '@/proto/packets/channel/v1/channel_pb'
+import { LanguageCode } from '@/proto/utils//language_code/v1/language_code_pb'
 import {
   CreateWorldEventSchema,
   WorldControllerSchema,
@@ -42,7 +42,7 @@ import {
   AgentCharacterSchema,
   LoadWorldEventSchema,
   LoadWorldEvent,
-} from '../../proto/spawner/world/v1/world_pb'
+} from '@/proto/packets/world/v1/world_pb'
 
 import type { Character } from '../entities/character.entity'
 import { PacketError } from '../entities/packets/error.entity'

@@ -1,7 +1,7 @@
 import {
   type Routing as ProtoRouting,
-} from '../../../proto/spawner/routing/v1/routing_pb'
-import type { EventActor } from '../../../proto/spawner/routing/v1/routing_pb'
+} from '@/proto/packets/routing/v1/routing_pb'
+import type { EventActor } from '@/proto/packets/routing/v1/routing_pb'
 
 interface RoutingProps {
   source?: EventActor

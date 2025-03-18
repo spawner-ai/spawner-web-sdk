@@ -1,5 +1,5 @@
 import { Timestamp, TimestampSchema } from '@bufbuild/protobuf/wkt'
-import type { GenerateSessionTokenResponse, GetSessionResponse, RefreshSessionTokenResponse } from '../../proto/spawner/main/v1/main_pb'
+import type { GenerateSessionTokenResponse, GetSessionResponse, RefreshSessionTokenResponse } from '@/proto/main/v1/main_pb'
 import { create } from '@bufbuild/protobuf'
 
 interface SessionTokenProps {

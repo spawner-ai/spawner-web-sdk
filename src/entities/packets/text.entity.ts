@@ -1,5 +1,5 @@
-import type { TextEvent as ProtoText } from '../../../proto/spawner/text/v1/text_pb'
-import type { CommandTriggered as ProtoCommandTriggered } from '../../../proto/spawner/text/v1/text_pb'
+import type { TextEvent as ProtoText } from '@/proto/packets/text/v1/text_pb'
+import type { CommandTriggered as ProtoCommandTriggered } from '@/proto/packets/text/v1/text_pb'
 
 interface CommandTriggeredProps {
   name: string

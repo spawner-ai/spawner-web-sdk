@@ -1,5 +1,5 @@
-import type { ErrorEvent as ProtoErrorEvent } from '../../../proto/spawner/error/v1/error_pb'
-import { StatusCode as ProtoStatusCode } from '../../../proto/spawner/error/v1/error_pb'
+import type { ErrorEvent as ProtoErrorEvent } from '@/proto/utils/error/v1/error_pb'
+import { StatusCode as ProtoStatusCode } from '@/proto/utils/error/v1/error_pb'
 
 enum StatusCode {
   UNSPECIFIED = 'UNSPECIFIED',

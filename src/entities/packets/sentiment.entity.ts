@@ -1,7 +1,7 @@
 import {
   SentimentEvent as ProtoSentimentEvent,
   SentimentResult as ProtoSentimentResult,
-} from '../../../proto/spawner/sentiment/v1/sentiment_pb'
+} from '@/proto/packets/sentiment/v1/sentiment_pb'
 
 enum SentimentResult {
   UNSPECIFIED = 'UNSPECIFIED',

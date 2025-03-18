@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@/proto/*": ["./proto/spawner/*"],
+      "@/proto/packets/*": ["./proto/spawner/packet_components/*"],
+      "@/proto/utils/*": ["./proto/spawner/utils/*"],
+    },
     /* Language and Environment */
     "target": "es2020",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
 

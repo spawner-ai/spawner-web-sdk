@@ -3,7 +3,7 @@ import {
   type KnowledgeReference as ProtoKnowledgeReference,
   type KnowledgeSource as ProtoKnowledgeSource,
   KnowledgeSourceType as ProtoKnowledgeSourceType,
-} from '../../../proto/spawner/knowledge/v1/knowledge_pb'
+} from '@/proto/packets/knowledge/v1/knowledge_pb'
 
 enum KnowledgeSourceType {
   UNSPECIFIED = 'UNSPECIFIED',

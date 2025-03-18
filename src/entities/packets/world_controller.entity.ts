@@ -1,4 +1,4 @@
-import { CreateWorldEvent, LoadWorldEvent, WorldController as ProtoWorldController, WorldControllerType as ProtoWorldControllerType } from '../../../proto/spawner/world/v1/world_pb'
+import { CreateWorldEvent, LoadWorldEvent, WorldController as ProtoWorldController, WorldControllerType as ProtoWorldControllerType } from '@/proto/packets/world/v1/world_pb'
 
 enum WorldControllerType {
   UNSPECIFIED = 'UNSPECIFIED',

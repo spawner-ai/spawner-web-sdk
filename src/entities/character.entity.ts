@@ -1,5 +1,5 @@
-import { AgentConfiguration } from '../../proto/spawner/world/v1/world_pb'
-import { AgentActor } from '../../proto/spawner/actor/v1/actor_pb'
+import { AgentConfiguration } from '@/proto/packets/world/v1/world_pb'
+import { AgentActor } from '@/proto/packets/actor/v1/actor_pb'
 
 interface Agent {
   id: string

@@ -1,12 +1,12 @@
 import { v4 } from 'uuid'
 import { create } from '@bufbuild/protobuf'
-import { FeatureConfigurationSchema } from '../../proto/spawner/main/v1/main_pb'
+import { FeatureConfigurationSchema } from '@/proto/main/v1/main_pb'
 import {
   SpawnerPacketSchema,
   SpawnerPacketType,
   SpawnerPacket as ProtoPacket,
-} from '../../proto/spawner/packet/v1/packet_pb'
-import { EventActorSchema, EventActorType, EventAgentSchema, EventPlayerSchema, RoutingSchema } from '../../proto/spawner/routing/v1/routing_pb'
+} from '@/proto/packet/v1/packet_pb'
+import { EventActorSchema, EventActorType, EventAgentSchema, EventPlayerSchema, RoutingSchema } from '@/proto/packets/routing/v1/routing_pb'
 import type {
   ApiKey,
   InternalConnectionConfig,
@@ -21,7 +21,7 @@ import type { SpawnerPacket } from '../entities/packets/spawner_packet.entity'
 import { Player } from '../entities/player.entity'
 import { SessionToken } from '../entities/session_token.entity'
 import { SpawnerMainService } from './main-service'
-import { TextEventSchema } from '../../proto/spawner/text/v1/text_pb'
+import { TextEventSchema } from '@/proto/packets/text/v1/text_pb'
 import { World } from '../entities/world.entity'
 import { type WebSocketProps, Connection } from '../connection/websocket-connection'
 
